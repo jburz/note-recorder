@@ -1,6 +1,7 @@
 //packages required in
 const express = require("express");
 const path = require("path");
+const fs = require("fs");
 
 //express app setup
 const app = express();
@@ -23,9 +24,18 @@ app.get("*", function (req, res) {
 });
 
 //ajax request handling
+let data = [];
 app.post('/api/notes', (req, res) => {
     console.log(req.body);
-})
+    data.push(req.body);
+    const myJSON = JSON.stringify(data);
+    console.log(myJSON);
+    fs.writeFile("db.json", myJSON, function(err) {
+        if (err) {
+            return console.log(err);
+        }
+    }); 
+});
 
 //server listening on port
 app.listen(PORT, () => console.log(`App listening on PORT ${PORT}`));
