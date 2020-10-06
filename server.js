@@ -22,5 +22,10 @@ app.get("*", function (req, res) {
     console.log('home');
 });
 
+//ajax request handling
+app.post('/api/notes', (req, res) => {
+    console.log(req.body);
+})
+
 //server listening on port
 app.listen(PORT, () => console.log(`App listening on PORT ${PORT}`));
