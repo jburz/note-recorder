@@ -4,25 +4,22 @@ const path = require("path");
 
 //express app setup
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 5000;
 
 //middleware to handle data parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static("assets"));
+app.use(express.static(path.join(__dirname, "./assets")));
 
 //routing routines to serve pages from ajax requests
-app.get("/css", function (req, res) {
-    res.sendFile(path.join(__dirname, "/assets/js/index.js"));
-})
-
-
 app.get("/notes", function (req, res) {
-    res.sendFile(path.join(__dirname, "/notes.html"))
+    res.sendFile(path.join(__dirname, "/notes.html"));
+    console.log('notes');
 });
 
 app.get("*", function (req, res) {
-    res.sendFile(path.join(__dirname, "/index.html"))
+    res.sendFile(path.join(__dirname, "/index.html"));
+    console.log('home');
 });
 
 //server listening on port
