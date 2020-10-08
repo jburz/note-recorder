@@ -2,7 +2,7 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
-const db = require("./db.json");
+const db = "./db.json";
 
 //express app setup
 const app = express();
@@ -13,26 +13,45 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "./assets")));
 
+//function to refresh db.json
+function getDB() {
+    return JSON.parse(fs.readFileSync(db, "utf8"));
+}
+
 //ajax request handling
+//post request
 app.post("/api/notes", (req, res) => {
-    db.push(req.body);
-    console.log(db);
-    // fs.appendFile("db.json", myJSON, function(err) {
-    //     if (err) {
-    //         return console.log(err);
-    //     }
-    // }); 
+    const currentNotes = getDB();
+    console.log(currentNotes);
+    let newNote = req.body;
+    newNote.id = Date.now();
+    console.log(newNote);
+    currentNotes.push(newNote);
+    const notesToJSON = JSON.stringify(currentNotes);
+    console.log(notesToJSON);
+
+    fs.writeFile("db.json", notesToJSON, function(err) {
+        if (err) {
+            return console.log(err);
+        }
+    });
+
+    res.send(currentNotes);
+
 });
 
-app.get("/api/notes", function(req, res) {
-    fs.readFile("db.json", "utf8", function(err, data) {
-        if (err) {
-            return err;
-        }
-        const response = JSON.parse(data);
-        res.send(response);
-        
-    })
+//get request
+app.get("/api/notes", function (req, res) {
+    res.send(getDB());
+});
+
+//delete request
+app.delete("/api/notes/:id", function (req, res) {
+    console.log(getDB());
+    console.log(req.params.id);
+    console.log(getDB().filter(function(note) {
+        return note.id != req.params.id;
+    }));
 });
 
 //routing routines to serve pages from ajax requests
@@ -43,7 +62,6 @@ app.get("/notes", function (req, res) {
 app.get("*", function (req, res) {
     res.sendFile(path.join(__dirname, "/index.html"));
 });
-
 
 //server listening on port
 app.listen(PORT, () => console.log(`App listening on PORT ${PORT}`));
