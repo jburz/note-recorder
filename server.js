@@ -6,7 +6,7 @@ const db = "./db.json";
 
 //express app setup
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 //middleware to handle data parsing
 app.use(express.urlencoded({ extended: true }));
