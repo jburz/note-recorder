@@ -30,7 +30,7 @@ app.post("/api/notes", (req, res) => {
     const notesToJSON = JSON.stringify(currentNotes);
     console.log(notesToJSON);
 
-    fs.writeFile("db.json", notesToJSON, function(err) {
+    fs.writeFileSync(db, notesToJSON, function(err) {
         if (err) {
             return console.log(err);
         }
@@ -47,11 +47,23 @@ app.get("/api/notes", function (req, res) {
 
 //delete request
 app.delete("/api/notes/:id", function (req, res) {
-    console.log(getDB());
-    console.log(req.params.id);
     console.log(getDB().filter(function(note) {
         return note.id != req.params.id;
     }));
+    const newDB = getDB().filter(function(note) {
+        return note.id != req.params.id;
+    });
+
+    notesToJSON = JSON.stringify(newDB);
+    fs.writeFileSync(db, notesToJSON, function(err) {
+        if (err) {
+            return console.log(err);
+        }
+    });
+
+    res.send(newDB);
+
+    
 });
 
 //routing routines to serve pages from ajax requests
