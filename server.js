@@ -22,13 +22,10 @@ function getDB() {
 //post request
 app.post("/api/notes", (req, res) => {
     const currentNotes = getDB();
-    console.log(currentNotes);
     let newNote = req.body;
     newNote.id = Date.now();
-    console.log(newNote);
     currentNotes.push(newNote);
     const notesToJSON = JSON.stringify(currentNotes);
-    console.log(notesToJSON);
 
     fs.writeFileSync(db, notesToJSON, function(err) {
         if (err) {
@@ -47,9 +44,6 @@ app.get("/api/notes", function (req, res) {
 
 //delete request
 app.delete("/api/notes/:id", function (req, res) {
-    console.log(getDB().filter(function(note) {
-        return note.id != req.params.id;
-    }));
     const newDB = getDB().filter(function(note) {
         return note.id != req.params.id;
     });
