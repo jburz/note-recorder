@@ -2,7 +2,7 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
-const db = "./db.json";
+const db = "./db/db.json";
 
 //express app setup
 const app = express();
@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 5000;
 //middleware to handle data parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "./assets")));
+app.use(express.static(path.join(__dirname, "./public")));
 
 //function to refresh db.json
 function getDB() {
@@ -68,11 +68,11 @@ app.delete("/api/notes/:id", function (req, res) {
 
 //routing routines to serve pages from ajax requests
 app.get("/notes", function (req, res) {
-    res.sendFile(path.join(__dirname, "/notes.html"));
+    res.sendFile(path.join(__dirname, "/public/notes.html"));
 });
 
 app.get("*", function (req, res) {
-    res.sendFile(path.join(__dirname, "/index.html"));
+    res.sendFile(path.join(__dirname, "/public/index.html"));
 });
 
 //server listening on port
